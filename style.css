@@ -1,0 +1,79 @@
+:root{color-scheme:light;--paper:#fafafa;--ink:#111;--muted:#575757;--line:#c8c8c8;font-family:Arial,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--paper)}
+*{box-sizing:border-box}
+body{margin:0}
+button{font:inherit;color:inherit;background:var(--paper);border:1px solid var(--ink);border-radius:0;min-height:46px;padding:10px 16px;cursor:pointer;font-weight:650}
+button:focus-visible,summary:focus-visible{outline:2px solid #111;outline-offset:3px}
+button:hover{background:#ececec}
+button:active{background:#ddd}
+button:disabled{cursor:default;color:#727272;border-color:#c8c8c8;background:#f1f1f1}
+button.primary{background:var(--ink);color:white}
+button.primary:hover{background:#303030}
+button.subtle{font-weight:500;background:transparent;color:var(--muted);border:0;padding:7px 4px;font-size:13px}
+#main{width:100%}
+.page{width:min(100%,1100px);margin:auto;min-height:100vh;min-height:100svh;padding:max(16px,env(safe-area-inset-top)) clamp(18px,4vw,58px) max(16px,env(safe-area-inset-bottom));display:flex;flex-direction:column}
+.top,.hud,.tools,.sheet-head,.entry-actions,.ready-line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-size:clamp(17px,2vw,23px);font-weight:750;letter-spacing:-.035em}
+h1,h2,h3,p{margin:0}
+.entry{max-width:740px}
+.entry h1{margin-top:clamp(34px,9vh,100px);font-size:clamp(36px,8.8vw,76px);line-height:1.14;letter-spacing:-.06em}
+.entry h1 span{display:block;font:700 clamp(72px,15vw,125px)/1 Arial;letter-spacing:-.07em;margin-bottom:10px}
+.intro-text{margin:auto 0;padding:36px 0;max-width:34em}
+.intro-text p{font-size:clamp(16px,2.5vw,20px);line-height:1.7;margin-top:12px}.intro-text p:first-child{font-weight:650;font-size:clamp(20px,3vw,25px)}
+.primary,.wide{width:100%}
+.entry-actions{margin-top:auto;display:grid}
+.stage{max-width:710px}
+.stage h1{font-size:clamp(36px,6vw,64px);line-height:1.12;margin:34px 0 20px}
+.stage .copy,.sheet p,dialog p{font-size:16px;line-height:1.65}
+.stage .copy p+p{margin-top:12px}
+.legend{padding:10px 0 20px;display:grid;gap:12px}
+.legend div,.rolelist button{display:flex;align-items:center;gap:10px}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--dot);display:inline-block;flex:none}
+.stage-actions{margin-top:auto;padding-top:24px;display:grid;gap:9px}
+.stage-actions p,.hint{color:var(--muted);line-height:1.55;font-size:13px}
+.play{max-width:1300px;height:100vh;height:100dvh;min-height:350px}
+.hud{min-height:42px;align-items:baseline;font-size:clamp(19px,3vw,27px);font-weight:650;font-variant-numeric:tabular-nums}
+.hud b{font-weight:650}
+.tools{align-items:center;min-height:40px}.tools span{font-size:13px;color:var(--muted)}
+.chartwrap{flex:1;display:flex;align-items:center;justify-content:center;min-height:80px;overflow:hidden}
+.chart{display:block;width:100%;height:100%;max-height:650px;min-height:0}.chart text{font:15px Arial,"PingFang SC",sans-serif;fill:#353535;paint-order:stroke;stroke:var(--paper);stroke-width:4px;stroke-linejoin:round}.chart .task{fill:var(--paper);stroke:#151515;stroke-width:1.8}
+.sheet{border-top:1.5px solid var(--ink);padding-top:14px;max-height:54%;overflow-y:auto}
+.sheet h2{font-size:clamp(20px,3vw,32px);line-height:1.3;margin-bottom:5px}
+.sheet .hint{font-size:13px}
+.sheet .controls,.stage .controls{display:grid;gap:8px;margin-top:12px}
+.sheet .controls:empty{display:none}.controls button{width:100%}
+.sheet .compact{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.compact h2{font-size:clamp(16px,2.4vw,23px);margin:0}
+.compact button{width:auto;min-width:88px}
+.notes{font-size:14px;color:var(--muted);margin:7px 0 0;line-height:1.5}
+.summary p{font-size:15px;line-height:1.6}
+.stage .chartwrap{min-height:180px}.stage .chart{max-height:330px}
+.ready-line{font-weight:700;font-size:18px;border-top:1px solid var(--ink);padding-top:13px}
+dialog{width:min(90%,440px);max-height:82dvh;overflow:auto;border:1px solid #111;background:var(--paper);color:var(--ink);padding:20px}
+dialog::backdrop{background:rgb(0 0 0 / 30%)}
+dialog h2{font-size:26px;margin-bottom:16px}
+dialog summary{padding:13px 0;cursor:pointer}
+dialog details{border-top:1px solid var(--line)}
+dialog details p{margin-bottom:12px}dialog #close{width:100%;margin-top:15px}
+.rolelist{display:grid;gap:6px;margin:10px 0}.rolelist button small{margin-left:auto;color:var(--muted)}
+.log{padding-left:22px;line-height:1.65}
+.win-dot{animation:arrival 1.4s linear both}@keyframes arrival{0%{fill:#e22}20%{fill:#ec8112}40%{fill:#d0b900}58%{fill:#14822b}73%{fill:#1c72bc}87%{fill:#8e48af}100%{fill:#fff}}
+@media(prefers-reduced-motion:reduce){.win-dot{animation:none;fill:#fff}}
+@media(min-width:750px){.sheet{width:min(100%,680px);align-self:center}.play .chartwrap{width:min(100%,940px);align-self:center}.play{padding-block:26px}.stage-actions{padding-bottom:8px}}
+@media(max-width:520px){.chart text{font-size:19px}.compact{flex-wrap:wrap}.compact button{margin-left:auto}}
+.entry-actions{justify-content:stretch}
+.map-entry{display:flex;align-items:center;justify-content:center;text-decoration:none;border:1px solid var(--ink);min-height:46px;color:var(--ink);font-weight:650}
+.play-map-tools{display:flex;gap:15px;align-items:center}.play-map-tools a{font-size:13px;color:var(--ink);padding:12px 0}
+
+.entry{max-width:860px}
+.entry h1{display:flex;align-items:baseline;gap:.34em;flex-wrap:wrap;margin:clamp(14px,3vh,32px) 0 18px;font-size:clamp(27px,6vw,52px)}
+.entry h1 span{font-size:clamp(42px,9vw,74px);margin:0}
+.entry .intro-text{margin:0;padding:18px 0}.entry .intro-text p{font-size:15px;margin-top:6px}
+.entry .intro-text p:first-child{font-size:17px}
+.entry .entry-actions{margin-top:2px}
+.home-atlas{height:clamp(320px,51svh,550px);width:100%;border:1px solid #969696;display:flex;flex-direction:column;background:var(--paper)}
+.atlas-bar{display:flex;align-items:center;justify-content:space-between;flex:none;min-height:44px;padding:0 12px;border-bottom:1px solid var(--line)}
+.atlas-bar h2{font:600 16px/1.3 'Songti SC','SimSun',serif;margin:0}.atlas-bar button{min-height:44px}
+.atlas-frame{display:block;flex:1;width:100%;min-height:0;border:0}
+body.atlas-open{overflow:hidden}
+.home-atlas.expanded,#play-atlas[open]{position:fixed;inset:0;width:100%;max-width:none;height:100dvh;max-height:none;border:0;margin:0;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);background:var(--paper);z-index:100;display:flex;flex-direction:column}
+.field-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0}.field-toolbar label{font-size:13px}.field-toolbar select,#scenario{font:inherit;background:#fafafa;color:#161616;padding:7px;border:1px solid #aaa;min-height:44px}.field-toolbar button{min-height:44px}.field-atlas{flex:none;height:clamp(300px,48svh,570px)}.play #field-read,.stage #field-read{font:12px/1.55 Arial,sans-serif;margin:6px 0}.entry-actions{flex-wrap:wrap}

@@ -1,0 +1,21 @@
+Walking map data — © OpenStreetMap contributors
+https://www.openstreetmap.org/copyright
+Database license: Open Data Commons Open Database License (ODbL) 1.0
+https://opendatacommons.org/licenses/odbl/1-0/
+The derived walking database is included under that license in walk-network.js.
+Source: OSM API 0.6 map extracts. Bounds are supplied in walkNetwork.bounds
+as west, south, east, north (WGS84). Ways are clipped to the union of the
+extracts. Coordinates in ways and crossings are ordered latitude, longitude.
+Thematic selection is based on highway, access, foot, bridge and tunnel tags.
+Expressways and general streets give location context. Only mapped pedestrian
+ways/steps and explicitly walkable paths are emphasized as pedestrian links.
+The named management-line greenway is a modern reference feature, not a
+survey of the 1994 boundary. No real-time closures or turn routing are supplied.
+
+Additional geometry in landscape.js is derived from OSM and licensed under ODbL 1.0.
+Historical street names are a curated subset. Current centerlines and water outlines
+are geographic references. Selected Meilin patrol corridors follow named sections
+of Erxian Road and mapped stone-paved non-bridge sections of the management-line
+greenway. They are generalized historical references, not a survey of the fence.
+
+梅林山地等高线：Mapzen Terrain Tiles (Terrarium), https://registry.opendata.aws/terrain-tiles/ 。源数据说明与署名：https://github.com/tilezen/joerd/blob/master/docs/attribution.md 。由第 12 级高程瓦片提取，显示区间 25–100 米。山径、水系为 OpenStreetMap 现地参照。
