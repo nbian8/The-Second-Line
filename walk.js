@@ -90,12 +90,6 @@ function createWalkingMap(map) {
         stroke(path,path.kind,z,modernTypes[path.kind],path.name?'今名 · '+path.name:'现地步行参照');
       }
     }
-    for(const path of terrain){
-      if(path.kind!=='patrol'||!bounds.intersects(path.bounds))continue;
-      stroke(path,'patrol',z,'二线巡逻道','管理线走向示意。现地路名为「'+path.name+'」。');
-      const candidate=onScreenSegment(path,size);
-      if(candidate)choices.push({...candidate,name:'二线巡逻道',priority:1});
-    }
     for(const place of historicPlaces){
       if(z<place.zoom||!bounds.contains(place.at))continue;
       const pos=map.latLngToContainerPoint(place.at),width=place.name.length*17+14;

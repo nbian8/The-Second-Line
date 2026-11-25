@@ -4,18 +4,18 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#fafafa"><meta name="referrer" content="strict-origin-when-cross-origin">
 <title>1994 深圳街道简图 · SPECIAL ZONE</title>
-<link rel="stylesheet" href="./vendor/leaflet/leaflet.css"><link rel="stylesheet" href="./style.css?v=3"><link rel="stylesheet" href="./geo.css?v=6">
-<script defer src="./vendor/leaflet/leaflet.min.js"></script><script defer src="./walk-network.js?v=8"></script><script defer src="./landscape.js?v=5"></script><script defer src="./history.js?v=5"></script><script defer src="./relief.js?v=8"></script><script defer src="./walk.js?v=9"></script><script defer src="./geo.js?v=9"></script>
+<link rel="stylesheet" href="./vendor/leaflet/leaflet.css"><link rel="stylesheet" href="./style.css?v=3"><link rel="stylesheet" href="./geo.css?v=10">
+<script defer src="./vendor/leaflet/leaflet.min.js"></script><script defer src="./walk-network.js?v=8"></script><script defer src="./landscape.js?v=10"></script><script defer src="./history.js?v=10"></script><script defer src="./relief.js?v=8"></script><script defer src="./walk.js?v=10"></script><script defer src="./geo.js?v=10"></script>
 </head><body class="geo">
 <header><a href="./index.html">‹ 返回试玩</a><h1>1994 深圳街道简图</h1><button id="about" aria-label="查看地图说明">说明</button></header>
 <main id="map" aria-label="深圳历史地名与现地步行地图"></main>
 <section class="map-panel" aria-label="地图操作">
 <div class="layer-switch" role="group" aria-label="底图"><button id="simple" aria-pressed="true">1994 简图</button><button id="street" aria-pressed="false">今日街图</button></div>
-<div class="map-readout"><div id="walk-key"><span><i class="road-line"></i>旧街道</span><span><i class="patrol-line"></i>二线走向</span><span class="detail"><i class="walk-line"></i>现地步行</span></div><p id="state" role="status"></p></div>
+<div class="map-readout"><div class="boundary-key"><span><i class="second-swatch"></i>二线关</span><span><i class="port-swatch"></i>深港分界</span></div><div id="walk-key"><span><i class="road-line"></i>旧街道</span><span class="detail"><i class="walk-line"></i>现地步行</span></div><p id="state" role="status"></p></div>
 <div class="actions"><label class="area-picker"><span class="sr-only">查看区域</span><select id="area"><option value="" hidden>查看区域</option><option value="port">皇岗村与交付点</option><option value="center">深南大道</option><option value="pass">梅林关</option><option value="reservoir">梅林水库</option><option value="all">试玩范围全览</option></select></label><button id="locate" class="primary">我的位置</button></div>
 </section>
 <dialog id="info"><h2>读图说明</h2>
-<p>宋体大字标出村落、山水和口岸，街名沿路排印。点地名可以读到它在 1994 年的来历。旧街线沿现地道路概绘，二线仅画有资料可对照的局部走向。</p>
+<p>宋体大字标出村落、山水和口岸，街名沿路排印。点地名可以读到它在 1994 年的来历。旧街线沿现地道路概绘，二线关按可核对的巡逻道分段示意。深港分界采用现地深圳河口岸段的行政界线，供实地试玩对照。</p>
 <p>梅林山地用浅色等高线表示坡势，等高距随放大由 100 米细化至 25 米。短虚线为现地山径。放大到街口，深色细线标出现地步行通道。点路段可查看数据中收录的今名。交付点位于今天的福田口岸查验区外。</p>
 <details><summary>史料与地图数据</summary><ul>
 <li><a href="https://www.szdag.gov.cn/dawh/tqssn/content/post_930259.html" target="_blank" rel="noopener">深圳市档案馆 · 深南大道沿革</a></li>

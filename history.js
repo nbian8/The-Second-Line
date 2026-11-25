@@ -1,6 +1,6 @@
 // WGS84 label anchors identify areas. They do not identify the door of a former building.
 const historicPlaces = [
-  {name:'交付点', at:[22.51577,114.06877], kind:'task', zoom:12,
+  {name:'交付点', at:[22.518425,114.064321], kind:'task', zoom:12,
     note:'游戏交付区在今天的福田口岸查验区外。福田口岸于 2007 年开通。'},
   {name:'皇岗口岸', at:[22.5236,114.0696], kind:'port', zoom:13,
     note:'皇岗口岸片区。1989 年启用货检，1991 年启用旅检。'},

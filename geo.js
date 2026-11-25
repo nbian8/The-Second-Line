@@ -36,7 +36,7 @@ const streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
   attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap contributors</a>'
 });
 const modernPoints=L.layerGroup();
-for(const [name,at] of [['福田口岸 · 交付点',[22.51577,114.06877]],['梅林关站',[22.597202306,114.048275806]]]){
+for(const [name,at] of [['福田口岸 · 交付点',[22.518425,114.064321]],['梅林关站',[22.597202306,114.048275806]]]){
   L.marker(at,{title:name,alt:name,icon:L.divIcon({className:'sq',iconSize:[9,9],iconAnchor:[4.5,4.5]})})
     .bindTooltip(name,{direction:'right',className:'landmark-name'}).bindPopup(name).addTo(modernPoints);
 }
@@ -137,3 +137,37 @@ if(embedded&&query.has('field')){
  map.on('click',e=>{if(picking&&playBounds.contains(e.latlng))send('field-pick',{p:[e.latlng.lat,e.latlng.lng]})});
  send('field-ready');
 }
+
+// Keep the two narrative boundaries above both basemaps and below the player markers.
+const borderPane=map.createPane('borderLines');
+borderPane.style.zIndex='410';borderPane.style.pointerEvents='none';
+const borderRenderer=L.svg({pane:'borderLines',padding:.25});
+const borders=[
+ {title:'二线关 · 特区管理线',lines:landscape.filter(p=>p[0]==='patrol').map(p=>p[2]),south:false},
+ {title:'深港分界 · 深圳河',lines:[portBoundary],south:true}
+];
+for(const border of borders){
+ const style={pane:'borderLines',renderer:borderRenderer,interactive:false,lineCap:'butt',lineJoin:'round',opacity:1};
+ L.polyline(border.lines,{...style,color:'white',weight:8}).addTo(map);
+ L.polyline(border.lines,{...style,color:border.south?'#343637':'#211f1d',weight:border.south?5.5:4.5,dashArray:border.south?undefined:'12 4'}).addTo(map);
+ if(border.south)L.polyline(border.lines,{...style,color:'white',weight:1.7}).addTo(map);
+ border.label=L.tooltip({permanent:true,interactive:false,direction:'top',offset:[0,-2],opacity:1,
+  className:'border-caption'+(border.south?' south':'')}).setContent(border.title);
+}
+function labelBorders(){
+ const size=map.getSize();
+ for(const border of borders){
+  const target=L.point(size.x*.45,size.y*.52);let best=null,score=Infinity;
+  for(const line of border.lines){
+   for(let i=1;i<line.length;i++){
+    const a=map.latLngToContainerPoint(line[i-1]),b=map.latLngToContainerPoint(line[i]);
+    const p=L.LineUtil.closestPointOnSegment(target,a,b);
+    if(p.x<61||p.x>size.x-61||p.y<27||p.y>size.y-15)continue;
+    const dist=p.distanceTo(target);if(dist<score){best=p;score=dist}
+   }
+  }
+  if(best)border.label.setLatLng(map.containerPointToLatLng(best)).addTo(map);
+  else border.label.remove();
+ }
+}
+map.on('moveend zoomend resize',labelBorders);labelBorders();
