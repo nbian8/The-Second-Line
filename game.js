@@ -80,7 +80,7 @@ function nextMove(){
 }
 function roleButtons(){return '<div class="rolelist">'+Object.entries(roles).map(([k,r])=>'<button data-act="role-'+k+'" aria-pressed="'+(s.role===k)+'"><i class="dot" style="--dot:'+r.color+'"></i>'+r.name+'<small>'+(s.role===k?'已选择':'选择')+'</small></button>').join('')+'</div>'}
 function atlasFrame(field=false){
- return '<iframe '+(field?'data-field ':'')+'class="atlas-frame" title="可缩放的 1994 深圳街道简图" src="./geo.html?embed=1&v=10'+(field?'&field=1':'')+'" allow="geolocation"></iframe>';
+ return '<iframe '+(field?'data-field ':'')+'class="atlas-frame" title="可缩放的 1994 深圳街道简图" src="./geo.html?embed=1&v=11'+(field?'&field=1':'')+'" allow="geolocation"></iframe>';
 }
 function atlasBar(expanded){
  return '<div class="atlas-bar"><h2>1994 街道简图</h2><button class="subtle" data-act="atlas-size" aria-expanded="'+expanded+'">'+(expanded?'收起地图':'展开地图')+'</button></div>';

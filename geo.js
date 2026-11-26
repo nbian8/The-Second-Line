@@ -63,6 +63,7 @@ function layerMode(on){
   streetMode=on;map.closePopup();
   if(on){walking.disable();modernPoints.addTo(map);map.attributionControl.removeAttribution(osmAttribution);tileIssue=false;streets.addTo(map);updateState('正在加载街道图…')}
   else{streets.remove();modernPoints.remove();walking.enable();map.attributionControl.addAttribution(osmAttribution);walkStatus()}
+  map.fire('basemapchange');
   elem('walk-key').hidden=on;
   elem('simple').setAttribute('aria-pressed',String(!on));elem('street').setAttribute('aria-pressed',String(on));
 }
@@ -107,9 +108,9 @@ elem('closeInfo').onclick=()=>elem('info').close();
 {
   new ResizeObserver(()=>map.invalidateSize({pan:true,debounceMoveend:true})).observe(elem('map'));
 }
-if(embedded){map.setView([22.5248,114.0588],16);layerMode(false)}
+if(embedded){focusArea('all');layerMode(false)}
 else if(query.get('layer')==='street'){focusArea('all');layerMode(true)}
-else {focusArea(query.get('area')||'port');layerMode(false)}
+else {focusArea(query.get('area')||'all');layerMode(false)}
 if(embedded&&query.has('field')){
  const layer=L.layerGroup().addTo(map);let picking=false,self=null;
  function send(type,extra={}){parent.postMessage({type,...extra},location.origin)}
@@ -143,16 +144,19 @@ const borderPane=map.createPane('borderLines');
 borderPane.style.zIndex='410';borderPane.style.pointerEvents='none';
 const borderRenderer=L.svg({pane:'borderLines',padding:.25});
 const borders=[
- {title:'二线关 · 特区管理线',lines:landscape.filter(p=>p[0]==='patrol').map(p=>p[2]),south:false},
- {title:'深港分界 · 深圳河',lines:[portBoundary],south:true}
+ {title:'二线关 · 约略走向',sides:['关外','关内'],lines:[secondLine],south:false},
+ {title:'深港分界 · 旧河道示意',sides:['深圳','香港'],lines:[streetMode?portBoundary:historicalPortLine],south:true}
 ];
 for(const border of borders){
  const style={pane:'borderLines',renderer:borderRenderer,interactive:false,lineCap:'butt',lineJoin:'round',opacity:1};
- L.polyline(border.lines,{...style,color:'white',weight:8}).addTo(map);
- L.polyline(border.lines,{...style,color:border.south?'#343637':'#211f1d',weight:border.south?5.5:4.5,dashArray:border.south?undefined:'12 4'}).addTo(map);
- if(border.south)L.polyline(border.lines,{...style,color:'white',weight:1.7}).addTo(map);
- border.label=L.tooltip({permanent:true,interactive:false,direction:'top',offset:[0,-2],opacity:1,
-  className:'border-caption'+(border.south?' south':'')}).setContent(border.title);
+ border.strokes=[];
+ function stroke(options){border.strokes.push(L.polyline(border.lines,{...style,...options}).addTo(map))}
+ stroke({color:'white',weight:8});
+ stroke({color:border.south?'#343637':'#211f1d',weight:border.south?5.5:4.5});
+ if(border.south)stroke({color:'white',weight:1.7});
+ border.label=L.tooltip({permanent:true,interactive:false,direction:'top',offset:[0,-5],opacity:1,
+  className:'border-caption'+(border.south?' south':'')}).setContent(border.sides[0]+' · '+border.title);
+ border.lower=L.tooltip({permanent:true,interactive:false,direction:'bottom',offset:[0,4],opacity:1,className:'border-side'}).setContent(border.sides[1]);
 }
 function labelBorders(){
  const size=map.getSize();
@@ -162,12 +166,23 @@ function labelBorders(){
    for(let i=1;i<line.length;i++){
     const a=map.latLngToContainerPoint(line[i-1]),b=map.latLngToContainerPoint(line[i]);
     const p=L.LineUtil.closestPointOnSegment(target,a,b);
-    if(p.x<61||p.x>size.x-61||p.y<27||p.y>size.y-15)continue;
+    if(p.x<85||p.x>size.x-85||p.y<27||p.y>size.y-15)continue;
     const dist=p.distanceTo(target);if(dist<score){best=p;score=dist}
    }
   }
-  if(best)border.label.setLatLng(map.containerPointToLatLng(best)).addTo(map);
-  else border.label.remove();
+  if(best){
+   const anchor=map.containerPointToLatLng(best);
+   border.label.setLatLng(anchor).addTo(map);
+   border.lower.setLatLng(anchor).addTo(map);
+  }else{border.label.remove();border.lower.remove()}
  }
 }
-map.on('moveend zoomend resize',labelBorders);labelBorders();
+function switchBorder(){
+ const border=borders[1];
+ border.lines=[streetMode?portBoundary:historicalPortLine];
+ for(const stroke of border.strokes)stroke.setLatLngs(border.lines);
+ border.label.setContent(streetMode?'深圳 · 深港分界（今日）':'深圳 · 深港分界（旧河道示意）');
+ labelBorders();
+}
+map.on('basemapchange',switchBorder);
+map.on('moveend zoomend resize',labelBorders);switchBorder();
