@@ -130,10 +130,10 @@ if(embedded&&query.has('field')){
   for(const a of data.actors){
    if(a.own){self=a.p;if(a.acc)L.circle(a.p,{radius:a.acc,stroke:false,fillOpacity:.12,color:a.color,interactive:false}).addTo(layer)}
    const marker=L.circleMarker(a.p,{radius:a.own?7:5,color:a.own?'#fff':a.color,weight:2.5,fillColor:a.color,fillOpacity:1}).addTo(layer);
-   if(a.label)marker.bindTooltip(a.label);
+   if(a.label){const label=document.createElement('span');label.textContent=a.label;marker.bindTooltip(label)}
   }
   if(data.focus&&self&&playBounds.contains(self))map.setView(self,Math.max(15,map.getZoom()),{animate:false});
-  if(picking)updateState(picking==='verify'?'点选你实际站立的参照位置。':'轻点地图，为当前角色放置模拟坐标。');
+  if(picking)updateState(picking==='rendezvous'?'轻点关内地点，与男孩约定碰头位置。':picking==='verify'?'点选你实际站立的参照位置。':'轻点地图，为当前角色放置模拟坐标。');
  });
  map.on('click',e=>{if(picking&&playBounds.contains(e.latlng))send('field-pick',{p:[e.latlng.lat,e.latlng.lng]})});
  send('field-ready');
