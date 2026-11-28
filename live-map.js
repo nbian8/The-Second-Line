@@ -4,7 +4,11 @@ function mountLiveMap(){
  document.body.classList.add('live-map');
  toolbar.className='map-tools';
  const layers=document.createElement('button'),locate=elem('locate');
- layers.textContent='图层';layers.setAttribute('aria-expanded','false');
+ locate.classList.remove('primary');
+ const locateLabel=document.createElement('span');
+ locate.innerHTML='<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m20 4-6.5 16-2.7-6.8L4 10.5 20 4Z"/></svg>';
+ locate.append(locateLabel);locateLabel.textContent='我的位置';
+ layers.innerHTML='<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z M3 12l9 5 9-5 M3 16l9 5 9-5"/></svg><span>图层</span>';layers.setAttribute('aria-expanded','false');
  toolbar.append(layers,locate);document.body.append(toolbar);
  layers.onclick=()=>{const open=panel.classList.toggle('shown');layers.setAttribute('aria-expanded',String(open))};
  const cross=document.createElement('span');cross.className='crosshair';cross.hidden=true;document.body.append(cross);
@@ -43,7 +47,7 @@ function mountLiveMap(){
   }
   if(e.data?.type==='pin-submit'&&!cross.hidden){const c=map.getCenter();send('field-pick',{p:[c.lat,c.lng]});return}
   if(e.data?.type!=='field')return;
-  data=e.data;last=Date.now();cross.hidden=!data.pick;locate.textContent=data.staff?'查看全员':'我的位置';
+  data=e.data;last=Date.now();cross.hidden=!data.pick;locateLabel.textContent=data.staff?'查看全员':'我的位置';
   const key=JSON.stringify(data.targets);
   if(key!==targetKey){targetKey=key;targets.clearLayers();for(const [p,label] of data.targets){
    L.circle(p,{radius:45,interactive:false,color:'#555',weight:1,fillOpacity:.04}).addTo(targets);

@@ -52,3 +52,36 @@ dialog button { display: flex; }
   display: grid; place-items: center; width: 44px; height: 44px; line-height: 1;
 }
 .live-map .layer-switch button[aria-pressed="true"] { background: var(--ui-ink); color: white; }
+
+/* Field HUD: compact readout, secondary tools, and a single location action. */
+#game header { align-items: center; }
+#game header > div:first-child {
+  display: flex; align-items: center; gap: 9px; min-height: 44px;
+  border-radius: 12px; padding: 0 11px;
+}
+#identity { display: inline-flex; align-items: center; color: #41454a; }
+#identity::before { flex: none; width: 8px; height: 8px; }
+#clock { font: 650 15px/1 system-ui,sans-serif; font-variant-numeric: tabular-nums; }
+#game header > div:last-child { border-radius: 12px; padding: 0; overflow: hidden; }
+#game header button { min-width: 44px; min-height: 44px; font-size: 14px; }
+#game header #refresh { width: 44px; padding: 0; }
+#game header button:focus-visible { outline-offset: -4px; }
+.live-map .map-tools { gap: 8px; align-items: center; }
+.live-map .map-tools button {
+  gap: 6px; padding: 0 12px; height: 44px; border-radius: 12px;
+  font: 600 14px/1 system-ui,"PingFang SC",sans-serif;
+  color: #23272c; background: #fff; border-color: #c6c9cb;
+}
+.live-map .map-tools #locate { color: #fff; background: #282e35; border-color: #282e35; }
+.live-map .map-tools button[aria-expanded="true"] { background: #e8ebed; }
+.live-map .leaflet-control-zoom a { position: relative; }
+.live-map .leaflet-control-zoom a span { opacity: 0; }
+.live-map .leaflet-control-zoom a::before, .live-map .leaflet-control-zoom-in::after {
+  content: ""; position: absolute; top: 50%; left: 50%;
+  width: 14px; height: 2px; background: currentColor; transform: translate(-50%,-50%);
+}
+.live-map .leaflet-control-zoom-in::after { width: 2px; height: 14px; }
+/* Use one CJK font's metrics for the glyphs and their line boxes. */
+#game header, #game button, .live-map .map-tools button {
+  font-family: "PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif;
+}

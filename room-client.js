@@ -37,7 +37,7 @@ async function call(body,identity=session){
  const data=await res.json();if(!res.ok)throw Object.assign(Error(data.error||'连接失败'),{status:res.status});return data;
 }
 function enter(s){session=s;localStorage.setItem(storeKey,JSON.stringify(s));$('entry').hidden=true;$('game').hidden=false;
- $('entry').querySelector('iframe').removeAttribute('src');$('atlas').src='./geo.html?embed=1&field=1&live=1&v=3';$('identity').textContent='房间 '+s.code;$('goal').textContent='正在恢复房间…';refresh()}
+ $('entry').querySelector('iframe').removeAttribute('src');$('atlas').src='./geo.html?embed=1&field=1&live=1&v=4';$('identity').textContent='房间 '+s.code;$('goal').textContent='正在恢复房间…';refresh()}
 async function login(create){
  if(pending)return;pending=true;$('join-error').textContent='正在连接房间…';
  try{const code=join.elements.code.value.trim().toUpperCase(),saved=JSON.parse(localStorage.getItem('second-line-key-'+code)||'null');
