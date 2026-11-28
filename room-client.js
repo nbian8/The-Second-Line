@@ -72,7 +72,7 @@ function controls(actions){
  };return b}));
 }
 function drawActions(v){
- let actions=v.actions.filter(([a])=>a!=='review');
+ let actions=v.actions.filter(([a])=>a!=='review').map(([a,label])=>[a,a==='wireCross'?'支付 30 元并通过':label]);
  if(picking&&!actions.some(([a])=>a==='pin')){picking=false;mapUpdate()}
  if(picking)actions=[['cancelPin','取消'],['savePin','确认约在这里']];
  if(v.role==='guard'&&v.started&&!v.end)actions.push(['fieldReview','现场复核']);
@@ -106,7 +106,7 @@ function staffPanel(v){
  if(reviewMode&&!v.review)$('decision').close()
 }
 function receive(v){if(!v.role||v.now<lastStamp)return;lastStamp=v.now;view=v;received=Date.now();sync='进度已同步';
- $('identity').textContent=v.title;$('identity').style.setProperty('--role',palette[v.role]||'#656359');
+ $('identity').textContent=v.title;$('identity').style.setProperty('--role',v.actors.find(a=>a.own)?.color||palette[v.role]||'#656359');
  $('goal').textContent=v.roster?(v.end?'主线结束 · '+v.end:v.started?'全员地图':v.roster.length+'/4 人已进房'):v.task;
  const signature=JSON.stringify([v.task,v.actions,!!v.review,v.end]);
  if(signature!==actionSignature){actionSignature=signature;fold(true);$('response').textContent=''}
@@ -121,7 +121,7 @@ function clock(){if(!view)return;const elapsed=Date.now()-received,v=view;
  $('status').textContent=[sync,names[v.role]?(v.actors.find(a=>a.own)&&v.now+elapsed-v.actors.find(a=>a.own).time>20000?'上次定位 '+Math.floor((v.now+elapsed-v.actors.find(a=>a.own).time)/1000)+' 秒前':gps):''].filter(Boolean).join(' · ')}
 async function act(action,extra={}){if(pending)return;pending=true;
  $('response').textContent='正在提交…';
- try{const next=await call({op:'action',action,nonce:crypto.randomUUID(),...extra});if(action==='pin')picking=false;receive(next);if(action!=='wireCross')$('response').textContent=action==='pin'?'约定地点已同步给两人。':'操作已确认。'}
+ try{const next=await call({op:'action',action,nonce:crypto.randomUUID(),...extra});if(action==='pin')picking=false;receive(next);if(action==='wireCross')$('response').textContent='已受伤 · 已扣 30 元。庇护期间仍可能短暂暴露。';else $('response').textContent=action==='pin'?'约定地点已同步给两人。':'操作已确认。'}
  catch(e){$('response').textContent=action==='review'?'当前无法提交复核，请与裁判联系。':e.message;refresh()}finally{pending=false}}
 async function refresh(){if(!session||polling)return;polling=true;try{receive(await call({op:'state'}))}
  catch(e){sync='等待重新连接';if(e.status===404)sync='房间已过期，请从房间菜单返回入口';$('status').textContent=sync;clock()}finally{polling=false}}
@@ -131,7 +131,7 @@ function geoError(e){gps=e.code===1?'请允许浏览器定位，再点刷新':'�
 function locate(force=false){if(!navigator.geolocation){gps='此设备不支持定位';return}
  if(force&&watch!==null){navigator.geolocation.clearWatch(watch);watch=null}
  if(watch===null)watch=navigator.geolocation.watchPosition(fix,geoError,opts);if(force)navigator.geolocation.getCurrentPosition(fix,geoError,opts)}
-function resume(){if(!session)return;refresh();if(names[view?.role]&&!view?.end){gps='正在重新定位';locate(true)}}
+function resume(){if(!session)return;sync='正在同步进度';clock();refresh();if(names[view?.role]&&!view?.end){gps='正在重新定位';clock();locate(true)}}
 $('refresh').onclick=resume;document.addEventListener('visibilitychange',()=>{if(!document.hidden)resume()});window.addEventListener('pageshow',resume);window.addEventListener('online',resume);
 $('menu').onclick=()=>{$('roomCode').textContent='房间号 '+session.code;$('settings').showModal()};$('close').onclick=()=>$('settings').close();
 async function invite(observer){const u=new URL(location.href);u.search='';u.searchParams.set('room',session.code);if(observer)u.searchParams.set('watch',view.invite);try{await navigator.clipboard.writeText(u.href);say('邀请链接已复制')}catch{$('roomCode').textContent=u.href}}
