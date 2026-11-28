@@ -54,14 +54,14 @@ dialog button { display: flex; }
 .live-map .layer-switch button[aria-pressed="true"] { background: var(--ui-ink); color: white; }
 
 /* Field HUD: compact readout, secondary tools, and a single location action. */
-#game header { align-items: center; }
+#game header { align-items: flex-start; }
 #game header > div:first-child {
-  display: flex; align-items: center; gap: 9px; min-height: 44px;
-  border-radius: 12px; padding: 0 11px;
+  display: grid; justify-items: start; gap: 2px; min-height: 44px;
+  padding: 6px 11px; border-radius: 12px;
 }
-#identity { display: inline-flex; align-items: center; color: #41454a; }
-#identity::before { flex: none; width: 8px; height: 8px; }
-#clock { font: 650 15px/1 system-ui,sans-serif; font-variant-numeric: tabular-nums; }
+#identity { display: inline-flex; align-items: center; gap: 6px; color: #25282b; font: inherit; font-size: 14px; line-height: 18px; font-weight: 650; }
+#identity::before { flex: none; width: 8px; height: 8px; margin: 0; }
+#clock { margin-inline-start: 14px; font: inherit; font-size: 12px; line-height: 16px; font-weight: 500; font-variant-numeric: tabular-nums; color: #4d5358; }
 #game header > div:last-child { border-radius: 12px; padding: 0; overflow: hidden; }
 #game header button { min-width: 44px; min-height: 44px; font-size: 14px; }
 #game header #refresh { width: 44px; padding: 0; }

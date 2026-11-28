@@ -116,7 +116,7 @@ function receive(v){if(!v.role||v.now<lastStamp)return;lastStamp=v.now;view=v;re
 }
 function format(ms){let s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
 function clock(){if(!view)return;const elapsed=Date.now()-received,v=view;
- $('clock').textContent=v.end?'已结算':v.started?format(v.started+7200000-v.now-elapsed):'等待开局';
+ $('clock').textContent=v.end?'已结算':v.started?'剩余 '+format(v.started+7200000-v.now-elapsed):'等待开局';
  $('meta').textContent=[v.money!=null?v.money+' 元':'',v.injured?'男孩受伤':'',v.shield!=null?(v.covering?'庇护中 ':'庇护可用 ')+format(v.shield-(v.covering?elapsed:0)):'',v.result,v.feedback].filter(Boolean).join('　');
  $('status').textContent=[sync,names[v.role]?(v.actors.find(a=>a.own)&&v.now+elapsed-v.actors.find(a=>a.own).time>20000?'上次定位 '+Math.floor((v.now+elapsed-v.actors.find(a=>a.own).time)/1000)+' 秒前':gps):''].filter(Boolean).join(' · ')}
 async function act(action,extra={}){if(pending)return;pending=true;
