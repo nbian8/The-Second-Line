@@ -111,7 +111,8 @@ elem('closeInfo').onclick=()=>elem('info').close();
 if(embedded){focusArea('all');layerMode(false)}
 else if(query.get('layer')==='street'){focusArea('all');layerMode(true)}
 else {focusArea(query.get('area')||'all');layerMode(false)}
-if(embedded&&query.has('field')){
+if(embedded&&query.has('live'))mountLiveMap();
+else if(embedded&&query.has('field')){
  const layer=L.layerGroup().addTo(map);let picking=false,self=null;
  function send(type,extra={}){parent.postMessage({type,...extra},location.origin)}
  elem('locate').textContent='角色位置';
