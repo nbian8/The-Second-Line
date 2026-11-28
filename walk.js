@@ -15,7 +15,7 @@ function createWalkingMap(map) {
       const minZoom=contour?(index?11:p.kind%50===0?13.25:15):14;
       if(z<minZoom)continue;
       const trail=p.kind==='trail';
-      const line=L.polyline(p.points,{renderer:canvas,interactive:trail,color:contour?(index?'#b7b0a5':'#cbc5bb'):(trail?'#796f62':'#8a979b'),
+      const line=L.polyline(p.points,{renderer:canvas,interactive:trail,color:contour?(index?'#b3b3b3':'#c8c8c8'):(trail?'#747474':'#8a979b'),
         weight:contour?(index?1.15:.8):1.35,opacity:Math.min(1,.55+(z-minZoom)*.35),dashArray:trail?'3 3':undefined,smoothFactor:.55});
       if(trail)line.on('click',e=>popup(e.latlng,'山径','现地采录的路径，通行情况需现场确认。'));
       line.addTo(shapes);

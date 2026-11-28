@@ -1,0 +1,54 @@
+:root {
+  color-scheme: light;
+  --ui-paper: #f7f7f7;
+  --ui-surface: #fff;
+  --ui-ink: #202020;
+  --ui-muted: #585858;
+  --ui-edge: #c7c7c7;
+  --ui-float: rgba(255,255,255,.97);
+  --ui-shadow: 0 3px 14px rgba(0,0,0,.09);
+}
+body { background: var(--ui-paper); color: var(--ui-ink); }
+button {
+  appearance: none;
+  -webkit-appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+  font-family: system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: normal;
+  padding-block: 9px;
+  padding-inline: 14px;
+}
+button:active:not(:disabled) { filter: brightness(.94); }
+button, input, select, dialog { color: var(--ui-ink); background-color: var(--ui-surface); border-color: var(--ui-edge); }
+button.primary { background: var(--ui-ink); color: white; }
+#game header > div, #card, .live-map .map-panel, .live-map .map-tools button {
+  background: var(--ui-float);
+  border-color: var(--ui-edge);
+  box-shadow: var(--ui-shadow);
+}
+#game header button { min-width: 54px; padding-inline: 12px; }
+#game header button + button, #card::before { border-color: var(--ui-edge); }
+#card::before { background-color: var(--ui-edge); }
+#meta, #response, #join-error, #status, #invited, small, .muted { color: var(--ui-muted); }
+#actions { align-items: stretch; gap: 8px; }
+#actions button, #create, #join button, dialog button, #assign { border-radius: 10px; min-height: 46px; }
+#actions button { min-width: 0; }
+#card #fold { justify-content: center; position: relative; padding-inline: 26px; min-height: 44px; }
+#goal { text-align: center; }
+#chevron { position: absolute; right: 4px; }
+dialog { border-radius: 16px; }
+dialog button { display: flex; }
+.roster-line { justify-content: flex-start; }
+.geo .map-tools button, .geo .layer-switch button, .geo .actions button {
+  min-height: 44px; padding: 8px 12px; line-height: 1.3;
+}
+.geo .leaflet-control-zoom a {
+  display: grid; place-items: center; width: 44px; height: 44px; line-height: 1;
+}
+.live-map .layer-switch button[aria-pressed="true"] { background: var(--ui-ink); color: white; }

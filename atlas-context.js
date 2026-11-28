@@ -2,9 +2,9 @@
 function createAtlasContext(bounds){
  const sourceZ=14,cache=new Map();
  const paint={
-  wood:[0,'#efeee9'],water:[0,'#e3e8e8'],block:[16.5,'#e6e3dc'],
-  trunk:[0,'#c2c0ba',1.25],major:[0,'#bfbbb4',1.05],street:[12,'#ccc9c2',.95],
-  lane:[14,'#d1cec8',.85],foot:[15,'#aaa69d',.9]
+  wood:[0,'#eeeeee'],water:[0,'#e1e5e7'],block:[16.5,'#e6e6e6'],
+  trunk:[0,'#c2c2c2',1.25],major:[0,'#bbbbbb',1.05],street:[12,'#c9c9c9',.95],
+  lane:[14,'#cecece',.85],foot:[15,'#a6a6a6',.9]
  };
  function load(x,y){
   const id=x+'-'+y;
