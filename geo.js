@@ -7,7 +7,7 @@ if(embedded){
 }
 const elem = id => document.getElementById(id);
 // WGS84 playtest envelope. The northern strip includes the outside-gate starts.
-const playBounds=L.latLngBounds([22.510,114.009],[22.604,114.076]);
+const playBounds=L.latLngBounds([22.506,114.0075],[22.609,114.0775]);
 const map=L.map('map',{maxBounds:playBounds,maxBoundsViscosity:1,maxZoom:19,zoomSnap:.25,zoomDelta:1,
   bounceAtZoomLimits:false,wheelPxPerZoomLevel:90,attributionControl:true});
 map.attributionControl.setPrefix(false);
@@ -29,6 +29,7 @@ map.setMinZoom(fitLimit());
 map.on('move zoom viewreset',frameMap);
 map.on('resize',()=>{map.setMinZoom(fitLimit());map.panInsideBounds(playBounds,{animate:false});frameMap()});
 const frame=L.rectangle(playBounds,{color:'#777',weight:1,fill:false,interactive:false}).addTo(map);
+const context=createAtlasContext(playBounds);
 const walking=createWalkingMap(map);
 L.control.scale({imperial:false,position:'bottomleft'}).addTo(map);
 const streets = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{
@@ -55,14 +56,14 @@ function walkStatus(){
   if(streetMode)return;
   elem('walk-key').dataset.detail=String(map.getZoom()>=15);
   if(map.getZoom()===map.getMinZoom()){updateState('试玩范围 · 北至梅林关外，南至深圳河口岸一带。');return}
-  if(!walking.covers(map.getCenter())){updateState('此处在简图采录范围外，可切换今日街图。');return}
+  if(!walking.covers(map.getCenter())){updateState('此处显示现地路网参照。');return}
   const z=map.getZoom();
   updateState(z<15?'放大查看街巷与山径。':z<16?'梅林山地浅线为等高线，短虚线为现地山径。':'点路段可对照今名。');
 }
 function layerMode(on){
   streetMode=on;map.closePopup();
-  if(on){walking.disable();modernPoints.addTo(map);map.attributionControl.removeAttribution(osmAttribution);tileIssue=false;streets.addTo(map);updateState('正在加载街道图…')}
-  else{streets.remove();modernPoints.remove();walking.enable();map.attributionControl.addAttribution(osmAttribution);walkStatus()}
+  if(on){context.remove();walking.disable();modernPoints.addTo(map);map.attributionControl.removeAttribution(osmAttribution);tileIssue=false;streets.addTo(map);updateState('正在加载街道图…')}
+  else{streets.remove();modernPoints.remove();context.addTo(map);walking.enable();map.attributionControl.addAttribution(osmAttribution);walkStatus()}
   map.fire('basemapchange');
   elem('walk-key').hidden=on;
   elem('simple').setAttribute('aria-pressed',String(!on));elem('street').setAttribute('aria-pressed',String(on));

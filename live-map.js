@@ -9,10 +9,11 @@ function mountLiveMap(){
  layers.onclick=()=>{const open=panel.classList.toggle('shown');layers.setAttribute('aria-expanded',String(open))};
  const cross=document.createElement('span');cross.className='crosshair';cross.hidden=true;document.body.append(cross);
  const tracks=new Map(),targets=L.layerGroup().addTo(map);let targetKey='',data={},radius=null,last=0;
+ let topInset=70,bottomInset=125;
  function send(type,extra={}){parent.postMessage({type,...extra},location.origin)}
  locate.onclick=()=>{
   const people=data.actors||[];
-  if(data.staff){const pts=people.filter(a=>playBounds.contains(a.p)).map(a=>a.p);if(pts.length)map.fitBounds(L.latLngBounds(pts),{padding:[30,30],maxZoom:16});else focusArea('all')}
+  if(data.staff){const pts=people.filter(a=>playBounds.contains(a.p)).map(a=>a.p);if(pts.length)map.fitBounds(L.latLngBounds(pts),{paddingTopLeft:[30,topInset+52],paddingBottomRight:[30,bottomInset+88],maxZoom:16});else focusArea('all')}
   else {const me=people.find(a=>a.own);if(me&&playBounds.contains(me.p))map.setView(me.p,Math.max(16,map.getZoom()));else send('map-note',{text:'当前位置在范围外或仍在等待定位'})}
  };
  function paint(){
@@ -35,6 +36,11 @@ function mountLiveMap(){
  }
  window.addEventListener('message',e=>{
   if(e.origin!==location.origin||e.source!==parent)return;
+  if(e.data?.type==='map-insets'){
+   topInset=e.data.top;bottomInset=e.data.bottom;
+   document.body.style.setProperty('--sheet-space',bottomInset+'px');
+   document.body.style.setProperty('--top-space',topInset+'px');return
+  }
   if(e.data?.type==='pin-submit'&&!cross.hidden){const c=map.getCenter();send('field-pick',{p:[c.lat,c.lng]});return}
   if(e.data?.type!=='field')return;
   data=e.data;last=Date.now();cross.hidden=!data.pick;locate.textContent=data.staff?'查看全员':'我的位置';

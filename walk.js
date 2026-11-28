@@ -7,12 +7,12 @@ function createWalkingMap(map) {
   const streets=walkNetwork.ways.map(makePath);
   const terrain=landscape.map(makePath);
   const relief=hillsideContext.map(([kind,points])=>makePath([kind,'',points]));
-  const firstZoom={express:12.5,avenue:13,street:14,lane:15.5,greenway:15};
+  const firstZoom={express:11,avenue:12,street:13.25,lane:14.75,greenway:14};
   function drawHills(bounds,z){
     for(const p of relief){
       if(!bounds.intersects(p.bounds))continue;
       const contour=typeof p.kind==='number',index=contour&&p.kind%100===0;
-      const minZoom=contour?(index?12.5:p.kind%50===0?14:15.5):14;
+      const minZoom=contour?(index?11:p.kind%50===0?13.25:15):14;
       if(z<minZoom)continue;
       const trail=p.kind==='trail';
       const line=L.polyline(p.points,{renderer:canvas,interactive:trail,color:contour?(index?'#b7b0a5':'#cbc5bb'):(trail?'#796f62':'#8a979b'),
@@ -56,7 +56,7 @@ function createWalkingMap(map) {
     if(!active)return;
     shapes.clearLayers();labels.clearLayers();
     const z=map.getZoom(),size=map.getSize(),bounds=map.getBounds().pad(.12);
-    if(z<12)return;
+
     const choices=[],occupied=[],used=new Set();
     function reserve(at,w,h){
       const b=L.bounds([at.x-w/2-4,at.y-h/2-3],[at.x+w/2+4,at.y+h/2+3]);
@@ -68,7 +68,7 @@ function createWalkingMap(map) {
       if(!bounds.intersects(path.bounds))continue;
       if(path.kind==='lake'){
         L.polygon(path.points,{renderer:canvas,interactive:false,color:'#aaa',weight:1,fillColor:'#dfdfdf',fillOpacity:.65}).addTo(shapes);
-      }else if(path.kind==='river'&&z>=13){
+      }else if(path.kind==='river'){
         stroke(path,'river',z,'深圳河','河道线供今天现场辨向。');
       }
     }
@@ -84,14 +84,14 @@ function createWalkingMap(map) {
       const candidate=onScreenSegment(path,size);
       if(candidate)choices.push({...candidate,name:path.name});
     }
-    if(z>=15)for(const path of visible){
+    if(z>=14.5)for(const path of visible){
       if(z<16 && ['crosswalk','steps'].includes(path.kind))continue;
       if(['walk','bridge','tunnel','steps','crosswalk'].includes(path.kind)){
         stroke(path,path.kind,z,modernTypes[path.kind],path.name?'今名 · '+path.name:'现地步行参照');
       }
     }
     for(const place of historicPlaces){
-      if(z<place.zoom||!bounds.contains(place.at))continue;
+      if(z<place.zoom-.75||!bounds.contains(place.at))continue;
       const pos=map.latLngToContainerPoint(place.at),width=place.name.length*17+14;
       if(pos.x<0||pos.x>size.x||pos.y<0||pos.y>size.y)continue;
       if(!reserve(pos,width,26))continue;

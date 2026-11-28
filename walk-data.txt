@@ -19,3 +19,5 @@ of Erxian Road and mapped stone-paved non-bridge sections of the management-line
 greenway. They are generalized historical references, not a survey of the fence.
 
 梅林山地等高线：Mapzen Terrain Tiles (Terrarium), https://registry.opendata.aws/terrain-tiles/ 。源数据说明与署名：https://github.com/tilezen/joerd/blob/master/docs/attribution.md 。由第 12 级高程瓦片提取，显示区间 25–100 米。山径、水系为 OpenStreetMap 现地参照。
+
+atlas-data/ contains local cartographic context derived from the 2026-11-22 OpenFreeMap planet (OpenMapTiles schema, OpenStreetMap contributors, ODbL). Coordinates are tile-local integers for the numbered z14 tiles. Landcover, water, street centerlines, pedestrian links and high-zoom building footprints describe present-day orientation, not surveyed 1994 buildings. https://openfreemap.org/ https://openmaptiles.org/ https://www.openstreetmap.org/copyright

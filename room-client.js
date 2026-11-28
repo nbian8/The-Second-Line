@@ -37,7 +37,7 @@ async function call(body,identity=session){
  const data=await res.json();if(!res.ok)throw Object.assign(Error(data.error||'连接失败'),{status:res.status});return data;
 }
 function enter(s){session=s;localStorage.setItem(storeKey,JSON.stringify(s));$('entry').hidden=true;$('game').hidden=false;
- $('entry').querySelector('iframe').removeAttribute('src');$('atlas').src='./geo.html?embed=1&field=1&live=1&v=2';$('identity').textContent='房间 '+s.code;$('goal').textContent='正在恢复房间…';refresh()}
+ $('entry').querySelector('iframe').removeAttribute('src');$('atlas').src='./geo.html?embed=1&field=1&live=1&v=3';$('identity').textContent='房间 '+s.code;$('goal').textContent='正在恢复房间…';refresh()}
 async function login(create){
  if(pending)return;pending=true;$('join-error').textContent='正在连接房间…';
  try{const code=join.elements.code.value.trim().toUpperCase(),saved=JSON.parse(localStorage.getItem('second-line-key-'+code)||'null');
@@ -48,7 +48,7 @@ async function login(create){
  }catch(e){$('join-error').textContent=e.message}finally{pending=false}
 }
 join.onsubmit=e=>{e.preventDefault();login(false)};$('create').onclick=()=>login(true);
-function mapUpdate(){if(!view)return;const doFocus=!focused&&view.actors.some(a=>a.own);if(doFocus)focused=true;
+function mapUpdate(){if(!view)return;const doFocus=!focused&&view.actors.some(a=>a.own||view.roster);if(doFocus)focused=true;
  $('atlas').contentWindow?.postMessage({type:'field',actors:view.actors,targets:view.targets,guard:view.role==='guard',staff:!!view.roster,now:view.now,pick:picking?'rendezvous':false,focus:doFocus},location.origin)}
 window.addEventListener('message',e=>{if(e.origin!==location.origin||e.source!==$('atlas').contentWindow)return;
  if(e.data?.type==='field-ready'){focused=false;mapUpdate()}
@@ -107,9 +107,9 @@ function staffPanel(v){
 }
 function receive(v){if(!v.role||v.now<lastStamp)return;lastStamp=v.now;view=v;received=Date.now();sync='进度已同步';
  $('identity').textContent=v.title;$('identity').style.setProperty('--role',v.actors.find(a=>a.own)?.color||palette[v.role]||'#656359');
- $('goal').textContent=v.roster?(v.end?'主线结束 · '+v.end:v.started?'全员地图':v.roster.length+'/4 人已进房'):v.task;
+ $('goal').textContent=v.roster?(v.end?'主线结束 · '+v.end:v.started?(v.review?'有待裁定事项':v.roster.length+' 名玩家 · 查看状态'):v.roster.length+'/4 人已进房'):v.task;
  const signature=JSON.stringify([v.task,v.actions,!!v.review,v.end]);
- if(signature!==actionSignature){actionSignature=signature;fold(true);$('response').textContent=''}
+ if(signature!==actionSignature){actionSignature=signature;fold(!(v.roster&&v.started&&!v.review&&!v.end));$('response').textContent=''}
  if(v.injured&&!lastInjury){$('response').textContent='男孩已受伤 · 通过铁丝网已付 30 元。庇护期间仍可能短暂暴露。';lastInjury=true}
  drawActions(v);staffPanel(v);mapUpdate();clock();$('observe').hidden=v.role!=='admin';
  if(names[v.role]&&!v.end&&watch===null)locate();if(v.end&&watch!==null){navigator.geolocation.clearWatch(watch);watch=null}
@@ -139,3 +139,12 @@ $('invite').onclick=()=>invite(false);$('observe').onclick=()=>invite(true);$('l
 setInterval(()=>{if(!document.hidden)refresh()},3000);
 setInterval(()=>{if(!document.hidden&&names[view?.role]&&!view.end&&navigator.geolocation)navigator.geolocation.getCurrentPosition(fix,geoError,opts)},12000);setInterval(clock,1000);
 if(session&&(!params.get('room')||params.get('room')===session.code))enter(session);else session=null;
+
+function syncMapInsets(){
+ if(!view)return;
+ const bottom=innerHeight-$('card').getBoundingClientRect().top;
+ const top=$('game').querySelector('header').getBoundingClientRect().bottom;
+ $('atlas').contentWindow?.postMessage({type:'map-insets',bottom,top},location.origin)
+}
+new ResizeObserver(syncMapInsets).observe($('card'));
+$('atlas').addEventListener('load',syncMapInsets);
