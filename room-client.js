@@ -65,6 +65,11 @@ function controls(actions){
   if(a==='pin')pickMode(true);
   else if(a==='cancelPin')pickMode(false);
   else if(a==='savePin')$('atlas').contentWindow.postMessage({type:'pin-submit'},location.origin);
+  else if(a==='begin'){
+   const missing=Object.keys(names).filter(role=>!view.roster.some(m=>m.role===role));
+   if(!missing.length){act('begin');return}
+   details('人未到齐，现在开局？',view.roster.length+'/4 名玩家已分配角色。空缺：'+missing.map(r=>names[r]).join('、')+'。开局后立即计时，本房间将停止接收新玩家。',[['确认提前开局',()=>{$('decision').close();act('begin',{confirmMissing:missing})}]])
+  }
   else if(a==='reviewDetails')review();
   else if(a==='fieldReview')details('现场复核','仅在现场已发现男孩、需要裁判核对时提交。',[['提交复核申请',()=>submitDecision('review')]]);
   else if(a==='catch')details('现场确认抓获','请核对现场身份，确认后本局主线结束。',[['确认已抓获',()=>submitDecision('catch')]]);
@@ -76,17 +81,17 @@ function drawActions(v){
  if(picking&&!actions.some(([a])=>a==='pin')){picking=false;mapUpdate()}
  if(picking)actions=[['cancelPin','取消'],['savePin','确认约在这里']];
  if(v.role==='guard'&&v.started&&!v.end)actions.push(['fieldReview','现场复核']);
- if(v.role==='admin'&&!v.started&&v.roster.length===4&&v.roster.every(x=>names[x.role]))actions.push(['begin','确认就位，开始游戏']);
+ if(v.role==='admin'&&!v.started&&v.roster.every(x=>names[x.role]))actions.push(['begin',v.roster.length<4?'提前开始游戏':'确认就位，开始游戏']);
  if(v.role==='admin'&&v.review&&!v.end)actions.push(['reviewDetails','1 项待裁定']);
  controls(actions)
 }
 function staffPanel(v){
  const staff=$('staff');if(!v.roster){staff.replaceChildren();return}
  const key=JSON.stringify(v.roster.map(m=>[m.id,m.role]));const admin=v.role==='admin';
- if(!v.started&&admin&&v.roster.length===4){
- if(rosterKey!==key){rosterKey=key;staff.innerHTML='<details open><summary>分配角色</summary>'+Object.entries(names).map(([r,n],i)=>'<label>'+n+'<select data-role="'+r+'">'+v.roster.map((m,j)=>'<option value="'+m.id+'" '+((m.role===r||m.role==='waiting'&&j===i)?'selected':'')+'>'+escapeText(m.name)+'</option>').join('')+'</select></label>').join('')+'<button id="assign">发给四人</button></details>';const selects=[...staff.querySelectorAll('select')];
+ if(!v.started&&admin&&v.roster.length>0){
+ if(rosterKey!==key){rosterKey=key;staff.innerHTML='<details open><summary>分配角色</summary>'+Object.entries(names).map(([r,n],i)=>'<label>'+n+'<select data-role="'+r+'"><option value="">空缺</option>'+v.roster.map((m,j)=>'<option value="'+m.id+'" '+((m.role===r||m.role==='waiting'&&j===i)?'selected':'')+'>'+escapeText(m.name)+'</option>').join('')+'</select></label>').join('')+'<button id="assign">确认角色分配</button></details>';const selects=[...staff.querySelectorAll('select')];
  // Swap the other assignment when a player is selected, so all four roles stay unique.
- for(const sel of selects){sel.dataset.previous=sel.value;sel.onchange=()=>{const other=selects.find(x=>x!==sel&&x.value===sel.value);if(other){other.value=sel.dataset.previous;other.dataset.previous=other.value}sel.dataset.previous=sel.value}}
+ for(const sel of selects){sel.dataset.previous=sel.value;sel.onchange=()=>{const other=sel.value&&selects.find(x=>x!==sel&&x.value===sel.value);if(other){other.value=sel.dataset.previous;other.dataset.previous=other.value}sel.dataset.previous=sel.value}}
  $('assign').onclick=()=>act('assign',{ids:[...staff.querySelectorAll('select')].map(n=>n.value)})}return}
  const keyList='list:'+v.roster.map(m=>m.id).join(',');
  if(rosterKey!==keyList){
@@ -108,7 +113,7 @@ function staffPanel(v){
 function receive(v){if(!v.role||v.now<lastStamp)return;lastStamp=v.now;view=v;received=Date.now();sync='进度已同步';
  $('identity').textContent=v.title;$('identity').style.setProperty('--role',v.actors.find(a=>a.own)?.color||palette[v.role]||'#656359');
  $('goal').textContent=v.roster?(v.end?'主线结束 · '+v.end:v.started?(v.review?'有待裁定事项':v.roster.length+' 名玩家 · 查看状态'):v.roster.length+'/4 人已进房'):v.task;
- const signature=JSON.stringify([v.task,v.actions,!!v.review,v.end]);
+ const signature=JSON.stringify([!!v.started,v.task,v.actions,!!v.review,v.end]);
  if(signature!==actionSignature){actionSignature=signature;fold(!(v.roster&&v.started&&!v.review&&!v.end));$('response').textContent=''}
  if(v.injured&&!lastInjury){$('response').textContent='男孩已受伤 · 通过铁丝网已付 30 元。庇护期间仍可能短暂暴露。';lastInjury=true}
  drawActions(v);staffPanel(v);mapUpdate();clock();$('observe').hidden=v.role!=='admin';

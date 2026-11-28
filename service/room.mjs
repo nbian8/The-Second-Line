@@ -71,10 +71,17 @@ export function command(s,m,a,b,t){
  }
  if(a==='assign'){
   check(r==='admin'&&!s.started,'无法分配');const chosen=b.ids;
-  check(Array.isArray(chosen)&&chosen.length===4&&new Set(chosen).size===4&&chosen.every(id=>s.members.some(x=>x.id===id&&x.role!=='admin'&&x.role!=='observer')),'请给四个角色分配不同玩家');
-  roles.forEach((role,i)=>s.members.find(x=>x.id===chosen[i]).role=role);return;
+  const players=s.members.filter(x=>roles.includes(x.role)||x.role==='waiting');
+  check(Array.isArray(chosen)&&chosen.length===4&&players.every(x=>chosen.includes(x.id))&&chosen.filter(Boolean).length===players.length&&chosen.every(id=>id===''||players.some(x=>x.id===id)),'请为每位在场玩家分配一个不同角色');
+  roles.forEach((role,i)=>{if(chosen[i])players.find(x=>x.id===chosen[i]).role=role});return;
  }
- if(a==='begin'){check(r==='admin'&&!s.started&&roles.every(k=>member(s,k)),'须先分配四个角色');s.started=t;note(s,'游戏开始',t);return}
+ if(a==='begin'){
+  check(r==='admin'&&!s.started,'仅管理员可开启待命中的房间');
+  check(!s.members.some(x=>x.role==='waiting'),'请先给已进房的玩家分配角色');
+  const missing=roles.filter(role=>!member(s,role));
+  check(!missing.length||JSON.stringify(b.confirmMissing)===JSON.stringify(missing),'请重新确认本局空缺的角色');
+  s.started=t;note(s,missing.length?'提前开局 · 空缺：'+missing.map(role=>titles[role]).join('、'):'游戏开始',t);return;
+ }
  if(r==='admin'&&s.started&&!s.end&&s.review&&['approve','dismiss'].includes(a)){s.review=false;if(a==='approve'&&!s.atPort)finish(s,'被抓获',t);return}
  check(roles.includes(r)&&s.started&&!s.end&&task(s,r,t).actions.includes(a),'事件已更新，请查看当前任务');
  function reach(p){check(near(s,r,p,t),'请到达目标附近并刷新定位')}
